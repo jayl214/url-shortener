@@ -51,6 +51,7 @@ export const linkRouter = createTRPCRouter({
             userId,
           }
         })
+        return
       }catch(error){
         //P2002: prisma error code for unique constraint violation
         if(!(error instanceof  Prisma.PrismaClientKnownRequestError) || error.code !== 'P2002'){

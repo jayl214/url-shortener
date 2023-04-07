@@ -11,6 +11,7 @@ export const UrlManagementPanel = () => {
   
   const {
     data: links,
+    refetch
   } = api.link.getUserLinks.useQuery()
 
   const {
@@ -19,10 +20,10 @@ export const UrlManagementPanel = () => {
     mutate: createNewLink
   } = api.link.createNewLink.useMutation()
 
-  const onSubmitNewLink = () => void createNewLink({newLink})
-
-  // useEffect(() => {
-  // }, [createNewLinkError])
+  const onSubmitNewLink = async () => {
+    await createNewLink({newLink})
+    refetch()
+  }
 
   return (
     <div>
