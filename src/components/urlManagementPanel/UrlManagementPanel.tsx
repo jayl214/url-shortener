@@ -68,7 +68,7 @@ export const UrlManagementPanel = () => {
               </tr>
             </thead>
             <tbody>
-              {links?.map((link) => <tr key={link.id}>
+              {links?.map((link) => <tr key={link.shortLinkParam}>
                 <td>{link.originalLink}</td>
                 <td>{link.shortLinkParam}</td>
               </tr>)}

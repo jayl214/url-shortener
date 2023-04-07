@@ -31,9 +31,18 @@ export const linkRouter = createTRPCRouter({
   getUserLinks: protectedProcedure.query(async ({ctx}) => {
     const userId = ctx.session.user.id
     const links = await ctx.prisma.link.findMany({
+      select: {
+        originalLink: true,
+        shortLinkParam: true
+      },
       where: {
-        userId
-      }
+        userId,
+      },
+      orderBy: [
+        {
+          id: 'asc',
+        },
+      ],
     })
     return links
   }),
