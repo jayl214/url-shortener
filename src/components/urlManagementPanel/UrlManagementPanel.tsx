@@ -11,19 +11,20 @@ export const UrlManagementPanel = () => {
   
   const {
     data: links,
-    refetch
   } = api.link.getUserLinks.useQuery()
+
+  const utils = api.useContext()
 
   const {
     error: createNewLinkError,
     isLoading,
     mutate: createNewLink
-  } = api.link.createNewLink.useMutation()
+  } = api.link.createNewLink.useMutation({onSuccess: () => {
+    utils.link.getUserLinks.invalidate()
+    setNewLink('')
+  }})
 
-  const onSubmitNewLink = async () => {
-    await createNewLink({newLink})
-    refetch()
-  }
+  const onSubmitNewLink = () => createNewLink({newLink})
 
   return (
     <div>
