@@ -11,7 +11,7 @@ import { TRPCError } from "@trpc/server";
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 7)
 
-const validations = {
+export const validations = {
   createNewLink: z.object({
     newLink: z.string().url()
   })
