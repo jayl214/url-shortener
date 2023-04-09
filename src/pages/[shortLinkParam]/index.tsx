@@ -1,40 +1,45 @@
-import { PrismaClient } from "@prisma/client"
-import { GetServerSidePropsContext, GetServerSidePropsResult, type NextPage } from "next"
-import ErrorPage from 'next/error'
+import { PrismaClient } from "@prisma/client";
+import type {
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+  NextPage,
+} from "next";
+import ErrorPage from "next/error";
 
-export async function getServerSideProps(context: GetServerSidePropsContext):Promise<GetServerSidePropsResult<{}>> {
-  const shortLinkParam = context.params?.shortLinkParam
+export async function getServerSideProps(
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<Record<string, never>>> {
+  const shortLinkParam = context.params?.shortLinkParam;
 
-  if(typeof shortLinkParam !== 'string'){
+  if (typeof shortLinkParam !== "string") {
     return {
-      props: {}
-    }
+      props: {},
+    };
   }
 
-  const prisma = new PrismaClient()
+  const prisma = new PrismaClient();
   const link = await prisma.link.findFirst({
     where: {
-      shortLinkParam
-    }
-  })
+      shortLinkParam,
+    },
+  });
 
-  if(!link){
+  if (!link) {
     return {
-      props: {}
-    }
+      props: {},
+    };
   }
 
   return {
     redirect: {
       destination: link.originalLink,
-      permanent: false
-    }
-  }
-  
+      permanent: false,
+    },
+  };
 }
 
 const NotFoundPage: NextPage = () => {
-  return <ErrorPage statusCode={404}/>
-}
+  return <ErrorPage statusCode={404} />;
+};
 
-export default NotFoundPage
+export default NotFoundPage;
