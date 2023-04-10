@@ -1,6 +1,7 @@
 import { signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
+import { validations } from "~/validations";
 import { NewUrlInput } from "./NewUrlInput";
 import { UserLinksTable } from "./UserLinksTable";
 
@@ -38,6 +39,12 @@ export const LinkManagementPanel = () => {
 
   const onSubmitNewLink = () => {
     const sanitizedNewLink = newLink.trim().toLowerCase();
+
+    if (!validations.isValidUrl.safeParse(sanitizedNewLink).success) {
+      setError("Please enter a valid URL");
+      return;
+    }
+
     createNewLink({ newLink: sanitizedNewLink });
     setError("");
   };

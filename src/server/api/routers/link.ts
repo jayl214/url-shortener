@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { customAlphabet } from 'nanoid'
 
 import {
@@ -8,14 +7,9 @@ import {
 import { Prisma } from '@prisma/client';
 
 import { TRPCError } from "@trpc/server";
+import { validations } from '~/validations';
 
 const nanoid = customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', 7)
-
-export const validations = {
-  createNewLink: z.object({
-    newLink: z.string().url()
-  })
-}
 
 const PRISMA_ERROR_MESSAGES = {
   duplicateOriginalLink: 'Unique constraint failed on the fields: (`userId`,`originalLink`)',
@@ -46,7 +40,7 @@ export const linkRouter = createTRPCRouter({
     })
     return links
   }),
-  createNewLink: protectedProcedure.input(validations.createNewLink).mutation(async ({ctx, input}) => {
+  createNewLink: protectedProcedure.input(validations.isValidUrl).mutation(async ({ctx, input}) => {
     const originalLink = input.newLink
     const userId = ctx.session.user.id
 
@@ -81,7 +75,7 @@ export const linkRouter = createTRPCRouter({
         }
       }
     }
-    console.log("ERROR - linkRouter.createNewLink: exceeded maximum duplicate shortLinkParam attempts")
+    console.error("❌ linkRouter.createNewLink: exceeded maximum duplicate shortLinkParam attempts")
     throw new TRPCError({
       code: 'INTERNAL_SERVER_ERROR',
       message: ERROR_MESSAGES.internalServerError
