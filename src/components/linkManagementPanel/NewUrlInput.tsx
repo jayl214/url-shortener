@@ -1,16 +1,16 @@
-import type { KeyboardEvent, SetStateAction } from "react";
+import type { KeyboardEvent } from "react";
 
 interface INewUrlInput {
   newLinkValue: string;
   isDisabled: boolean;
   error: string;
-  setNewLink: (value: SetStateAction<string>) => void;
+  onChangeNewLink: (newLinkValue: string) => void;
   onSubmitNewLink: () => void;
 }
 
 export const NewUrlInput = ({
   newLinkValue,
-  setNewLink,
+  onChangeNewLink,
   isDisabled,
   error,
   onSubmitNewLink,
@@ -32,7 +32,7 @@ export const NewUrlInput = ({
           type="text"
           placeholder="eg: example.com"
           value={newLinkValue}
-          onChange={(e) => setNewLink(e.target.value)}
+          onChange={(e) => onChangeNewLink(e.currentTarget.value)}
           onKeyDown={onKeyDown}
         />
         <label className="label">

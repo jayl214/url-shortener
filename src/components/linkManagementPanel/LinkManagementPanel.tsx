@@ -42,6 +42,11 @@ export const LinkManagementPanel = () => {
     setError("");
   };
 
+  const onChangeNewLink = (newLinkValue: string) => {
+    setError("");
+    setNewLink(newLinkValue);
+  };
+
   return (
     <div className="flex h-full max-h-[56rem] w-1/2 min-w-0 max-w-4xl flex-col">
       <div className="flex h-1/6 items-center justify-end">
@@ -55,7 +60,7 @@ export const LinkManagementPanel = () => {
           error={error}
           isDisabled={isLoading}
           newLinkValue={newLink}
-          setNewLink={setNewLink}
+          onChangeNewLink={onChangeNewLink}
           onSubmitNewLink={onSubmitNewLink}
         />
 
