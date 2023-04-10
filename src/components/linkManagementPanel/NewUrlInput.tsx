@@ -2,6 +2,7 @@ import type { KeyboardEvent, SetStateAction } from "react";
 
 interface INewUrlInput {
   newLinkValue: string;
+  isDisabled: boolean;
   error: string;
   setNewLink: (value: SetStateAction<string>) => void;
   onSubmitNewLink: () => void;
@@ -10,6 +11,7 @@ interface INewUrlInput {
 export const NewUrlInput = ({
   newLinkValue,
   setNewLink,
+  isDisabled,
   error,
   onSubmitNewLink,
 }: INewUrlInput) => {
@@ -38,7 +40,7 @@ export const NewUrlInput = ({
         </label>
       </div>
       <button
-        className="btn-primary btn"
+        className={`btn-primary btn ${isDisabled ? "btn-disabled" : ""}`}
         onClick={() => void onSubmitNewLink()}
       >
         Submit

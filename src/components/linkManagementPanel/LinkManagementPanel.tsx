@@ -53,6 +53,7 @@ export const LinkManagementPanel = () => {
       <div className="flex h-5/6 flex-col justify-center gap-8">
         <NewUrlInput
           error={error}
+          isDisabled={isLoading}
           newLinkValue={newLink}
           setNewLink={setNewLink}
           onSubmitNewLink={onSubmitNewLink}

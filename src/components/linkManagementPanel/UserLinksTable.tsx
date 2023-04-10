@@ -35,7 +35,7 @@ export const UserLinksTable = ({ links = [] }: IUserLinksTable) => {
                     onClick={() => void navigator.clipboard.writeText(fullUrl)}
                   >
                     <div className="tooltip" data-tip="click to copy">
-                      <a className="link">{fullUrl}</a>
+                      <a className="link">/{link.shortLinkParam}</a>
                     </div>
                   </td>
                 </tr>
