@@ -1,20 +1,60 @@
-import type { KeyboardEvent } from "react";
+import { type KeyboardEvent, useEffect, useState } from "react";
+import { api } from "~/utils/api";
+import { validations } from "~/validations";
 
-interface INewUrlInput {
-  newLinkValue: string;
-  isDisabled: boolean;
-  error: string;
-  onChangeNewLink: (newLinkValue: string) => void;
-  onSubmitNewLink: () => void;
-}
+const INVALID_URL_ERROR = "Please enter a valid URL";
 
-export const NewUrlInput = ({
-  newLinkValue,
-  onChangeNewLink,
-  isDisabled,
-  error,
-  onSubmitNewLink,
-}: INewUrlInput) => {
+export const NewUrlInput = () => {
+  const [newLink, setNewLink] = useState("");
+  const [error, setError] = useState("");
+
+  const utils = api.useContext();
+
+  const {
+    error: createNewLinkError,
+    isLoading,
+    mutate: createNewLink,
+  } = api.link.createNewLink.useMutation({
+    onSuccess: () => {
+      void utils.link.getUserLinks.invalidate();
+      setNewLink("");
+    },
+  });
+
+  useEffect(() => {
+    const inputZodError = createNewLinkError?.data?.zodError;
+    if (inputZodError?.fieldErrors?.newLink?.[0] === "Invalid url") {
+      setError(INVALID_URL_ERROR);
+      return;
+    }
+    const errorMessage = createNewLinkError?.message;
+    if (errorMessage) {
+      setError(errorMessage);
+      return;
+    }
+  }, [createNewLinkError]);
+
+  const onSubmitNewLink = () => {
+    const sanitizedNewLink = newLink.trim().toLowerCase();
+
+    const isValidUrl = validations.isValidUrl.safeParse({
+      newLink: sanitizedNewLink,
+    }).success;
+
+    if (!isValidUrl) {
+      setError(INVALID_URL_ERROR);
+      return;
+    }
+
+    createNewLink({ newLink: sanitizedNewLink });
+    setError("");
+  };
+
+  const onChangeNewLink = (newLinkValue: string) => {
+    setError("");
+    setNewLink(newLinkValue);
+  };
+
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       onSubmitNewLink();
@@ -31,7 +71,7 @@ export const NewUrlInput = ({
           className={`input-bordered input ${error && "input-error"}`}
           type="text"
           placeholder="eg: example.com"
-          value={newLinkValue}
+          value={newLink}
           onChange={(e) => onChangeNewLink(e.currentTarget.value)}
           onKeyDown={onKeyDown}
         />
@@ -40,7 +80,7 @@ export const NewUrlInput = ({
         </label>
       </div>
       <button
-        className={`btn-primary btn ${isDisabled ? "btn-disabled" : ""}`}
+        className={`btn-primary btn ${isLoading ? "btn-disabled" : ""}`}
         onClick={() => void onSubmitNewLink()}
       >
         Submit
